@@ -51,7 +51,7 @@ def simulate(em: EventManager, l1: Line, la=0.2, n=8):
 
     mean = 1 / la
 
-    customers = npr.exponential(mean, size=n)
+    customers = np.cumsum(npr.exponential(mean, size=n))
     for c in customers:
         em.add_event(c, l1.move, name='new customer at L1')
     em.events = sorted(em.events, key=lambda x: x.time)
@@ -81,7 +81,8 @@ def simulate(em: EventManager, l1: Line, la=0.2, n=8):
         avg_q_len = sum(np.array(ql) * np.array(qt)) / max_time
 
         wt = [e['wait_time'] for e in em.log if e['type'] == 'queue remove']
-        avg_wait_time = sum(wt) / len(wt)
+        # avg_wait_time = sum(wt) / len(wt)
+        avg_wait_time = sum(wt) / len(ce)
 
     return (rejection_rate, avg_wait_time, avg_q_len)
 
